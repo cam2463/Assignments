@@ -1,0 +1,98 @@
+1. )
+grep "EQ_" signif.txt.tsv 
+>>
+there are 7 earthquakes
+
+2.)
+awk -F"\t" "NR == 1 {print NF}" signif.txt.tsv
+>>
+47 columns 
+
+3.)
+cut -f 3,10,18 signif.txt.tsv  > Year_Mag_Country.tsv
+
+4.)
+sort -k 2n  Year_Mag_Country.tsv | tail
+
+>>
+1965     8.7    USA
+1716     8.8    PERU
+1812     8.8    USA
+2010     8.8    CHILE
+1700     9.0    USA
+1952     9.0    RUSSIA
+2004     9.1    INDONESIA
+2011     9.1    JAPAN
+1964     9.2    USA
+1960     9.5    CHILE
+
+5.)
+ut -f3 Year_Mag_Country.tsv | sort | uniq | wc -l
+>>
+154 countries 
+
+6.)
+grep -E "USA|USA TERRITORY" Year_Mag_Country.tsv | wc -l
+>>
+294 Earthquakes
+
+7.)
+grep -w "USA" Year_Mag_Country.tsv |grep -v "USA TERRITORY" | wc -l
+>>
+255 Earthquakes
+
+8.)
+cut -f 3 Year_Mag_Country.tsv | sort | uniq -c | sort -n -r | head -n 10
+
+>>
+    579 CHINA
+    400 JAPAN
+    365 IRAN
+    363 INDONESIA
+    324 ITALY
+    319 TURKEY
+    259 GREECE
+    255 USA
+    207 PHILIPPINES
+    193 MEXICO
+
+9.)
+#!/bin/bash 
+
+y=$1
+file=Year_Mag_Country.tsv
+
+grep -v "USA TERRITORY" "$file"| grep "${y}"|wc -l
+
+>>
+255 earthquakes
+
+
+10.)
+
+#!/bin/bash
+
+y=$1 
+file=Year_Mag_Country.tsv 
+
+grep "${y}" "$file" | wc -l 
+
+echo "Total Earthquakes"
+
+grep "${y}" "$file" |sort -k 2 -n | tail -1 
+
+echo "Largest Earthquake"
+
+>>
+192
+Total Earthquakes
+1960     9.5    CHILE
+Largest Earthquake
+
+
+11.)
+tail -n +2 Year_Mag_Country.tsv | sort -t"," -k2 -nr | head - 10 | awk -F"," {print "Year: "$1", Mag: "$2", Country: "$3}"
+77 Earthquakes in 2008 
+
+awk -F"\t" "NR>1 {print $1}" Year_Mag_Country.tsv / sort / uniq -c / sort -rn / head -n 10
+
